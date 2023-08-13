@@ -1,0 +1,112 @@
+:root {
+    --blue: #1a73e8;
+    --red: #ea4335;
+  
+    --black: #1a1625;
+    --dark: #2f2b3a;
+    --normal: #46424f;
+    --light: #5e5a66;
+    --bright: #76737e;
+    --brighter: #908d96;
+    --white: #ffffff;
+  
+    --gray: #bdbdbd;
+  }
+  
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  color: var(--white);
+}
+
+body {
+  background: var(--dark);
+  position: relative;
+}
+
+.blur {
+  background: rgb(113,113,113);
+  background: radial-gradient(circle, rgba(221,221,221,0.1) 30%, rgba(113,113,113,0.1) 90%);
+  position: absolute;
+  inset: 0;
+}
+.blur h1 {
+  position: absolute;
+  top: 250px;
+  left: 50%;
+  translate: -50% -50%;
+  background: #00000048;
+  border-radius: 15px;
+  padding: 50px 30px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--white);
+}
+
+.content {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+}
+.header {
+  background: var(--light);
+  padding: 25px 50px;
+  border-radius: 8px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+.header--title {
+  display: flex;
+  gap: 25px;
+  align-items: baseline;
+}
+.header--sub {
+  font-size: 16px;
+  color: var(--gray);
+}
+.header--description {
+  font-size: 14px;
+  max-width: 350px;
+  text-align: center;
+  color: var(--gray);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.header--button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition-duration: .3s;
+}
+.button__blue { background: var(--blue); }
+.button__red { background: var(--red); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  grid-gap: 10px;
+}
+.slot {
+  background: var(--light);
+  transition-duration: .3s;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.slot:hover {
+  background: var(--bright);
+}
