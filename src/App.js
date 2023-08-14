@@ -17,11 +17,16 @@ export default function App() {
     const protocol = process.env.REACT_APP_ENVIRONMENT === "local" ? "ws://" : "wss://"
     const newSocket = new WebSocket(`${protocol}${host}`)
 
+    let interval = null
+
     const eventOpen = () => {
       console.info("Websocket connection established!")
       setConnectionData(old => {
         return { ...old, status: true, reconnecting: false }
       })
+      interval = setInterval(() => {
+        newSocket.send(JSON.stringify({ type: "ping" }))
+      }, 10000)
     }
     const eventClose = () => {
       console.info("Websocket connection closed!")
@@ -31,6 +36,7 @@ export default function App() {
       setConnectionData(old => {
         return { ...old, status: false, reconnecting: false }
       })
+      if (interval) clearInterval(interval)
     }
     const eventMessage = async function(e) {
       const data = await JSON.parse(e.data)
