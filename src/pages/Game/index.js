@@ -36,31 +36,37 @@ export default function Game(props) {
     props.socket.send(JSON.stringify({ type: "play", slot: i }))
   }
 
-  const tag = gameState.currentPlayer === gameState.playerId ? "toi" : "ton adversaire"
-  const winTag = gameState.currentPlayer === gameState.playerId ? "toi" : "ton adversaire"
   const playerColors = {
     [gameState.playerId]: colors[0],
     [gameState.playerId === 0 ? 1 : 0]: colors[1]
   }
 
+  const tag = gameState.currentPlayer === gameState.playerId ? "toi" : "ton adversaire"
+  let winTag
+  if (!gameState.status) {
+    winTag = <>Chargement de la partie...</>
+  } else if (gameState.status === "playing") {
+    winTag = <>C'est à <span style={{ color: playerColors[gameState.currentPlayer] }}>{tag}</span> de jouer !</>
+  } else {
+    if (gameState.results.reason === "draw") {
+      winTag = <>Aucun joueur ne remporte la partie !</>
+    } else if (gameState.results.reason === "win") {
+      winTag = <>Le gagnant est <span style={{ color: playerColors[gameState.results.winner] }}>{gameState.results.winner === gameState.playerId ? "toi" : "ton adversaire"}</span> !</>
+    } else {
+      winTag = <>Ton <span style={{ color: colors[1] }}>adversaire</span> a quitté la partie !</>
+    }
+  }
+    
+
   return (
     <div className="content">
       <header className="header">
-        <h1 className="header--title">
-          {
-            gameState.status === "finished" ?
-              "Partie terminée" :
-              "Morpion multijoueur"
-          }
-        </h1>
-        <p className="header--description">
-          {
-            gameState.status === "finished" ?
-              (gameState.winner === null ?
-              <>Match nul !</> :
-              <>La gagnant est <span style={{ color: playerColors[gameState.winner] }}>{winTag}</span>.</>) :
-            <>C'est <span style={{ color: playerColors[gameState.currentPlayer] }}>{tag}</span> qui joue.</>
-          }
+        <div className="header--title">
+          <h1>Morpion</h1>
+          <span className="header--subtitle">Partie {gameState.privacy === "public" ? "Publique" : "Privée"}</span>
+        </div>
+        <p className="header--action">
+          {winTag}
         </p>
       </header>
       <div className="grid">

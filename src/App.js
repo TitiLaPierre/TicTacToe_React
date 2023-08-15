@@ -1,15 +1,17 @@
 import React from "react"
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import Lobby from "./pages/Lobby"
 import Game from "./pages/Game"
 import ConnectionLost from "./pages/ConnectionLost"
+import Join from "./pages/Join"
 
 import Blur from "./components/Blur"
 
 export default function App() {
   
   const [socket, setSocket] = React.useState(null)
-  const [sessionData, setSessionData] = React.useState({ queue: false, gameId: null, onlineCount: null })
+  const [sessionData, setSessionData] = React.useState({ queue: false, gameId: null, publicPlayerCount: "?" })
   const [connectionData, setConnectionData] = React.useState({ status: false, reconnecting: true, count: 0 })
 
   React.useEffect(() => {
@@ -40,9 +42,9 @@ export default function App() {
     }
     const eventMessage = async function(e) {
       const data = await JSON.parse(e.data)
-      if (data.type === "online_count_update") {
+      if (data.type === "public_player_count") {
         setSessionData(old => {
-          return { ...old, onlineCount: data.count }
+          return { ...old, publicPlayerCount: data.count }
         })
       }
     }
@@ -59,6 +61,7 @@ export default function App() {
       newSocket.removeEventListener("message", eventMessage)
       newSocket.close()
     }
+  // eslint-disable-next-line
   }, [connectionData.count])
 
   if (!socket)
@@ -70,17 +73,28 @@ export default function App() {
     components.push(<Blur key="blur" />)
   
   if (!connectionData.status && !connectionData.reconnecting) {
-    document.title = "Connexion perdue"
+    document.title = "Morpion • Connexion perdue"
     components.push(<ConnectionLost socket={socket} setConnectionData={setConnectionData} key="content" />)
   } else if (!sessionData.gameId) {
-    document.title = "Morpion | File d'attente"
+    document.title = "Morpion • File d'attente"
     components.push(<Lobby socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />)
   } else {
-    document.title = "Morpion | Partie en cours"
+    document.title = "Morpion • Partie en cours"
     components.push(<Game socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />)
   }
 
-  return <>
-    {components}
-  </>
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: components,
+    },
+    {
+      path: "/:gameId",
+      element: <Join setSessionData={setSessionData} />,
+    }
+  ]);
+
+  return (
+    <RouterProvider router={router} />
+  )
 }
