@@ -1,3 +1,5 @@
+import Note from "~/components/Note"
+
 import img_chevron from "~/medias/chevron.svg"
 
 export function getButton(setSessionData) {
@@ -24,30 +26,42 @@ export function getGameNote(gameState) {
         [gameState.playerId]: colors[0],
         [opponentId]: colors[1]
     }
-    const playerNames = {
-        [gameState.playerId]: "toi",
-        [opponentId]: "ton adversaire"
-    }
 
     let content, color
     if (gameState.status === "playing") {
-        content = `C'est à **${playerNames[gameState.currentPlayer]}** de jouer !`
         color = playerColors[gameState.currentPlayer]
-    } else if (gameState.results.reason === "draw") {
-        content = "Aucun joueur ne remporte la partie !"
-    } else if (gameState.results.reason === "win") {
-        content = `C'est **${playerNames[gameState.results.winner]}** qui remporte la partie !`
-        color = playerColors[gameState.results.winner]
+        if (gameState.currentPlayer === gameState.playerId)
+            content = `C'est à **ton tour** de jouer !`
+        else
+            content = `C'est à **ton adversaire** de jouer !`
     } else {
-        content = "Ton **adversaire** a quitté la partie !"
-        color = playerColors[opponentId]
+        color = playerColors[gameState.results.winner]
+        if (gameState.results.reason === "draw") {
+            content = "Aucun joueur ne remporte la partie !"
+        } else if (gameState.results.reason === "win") {
+            if (gameState.results.winner === gameState.playerId)
+                content = `Félicitation, **tu** remportes la partie !`
+            else
+                content = `Dommage, **ton adversaire** remporte la partie !`
+        } else if (gameState.results.reason === "time") {
+            if (gameState.results.winner === gameState.playerId)
+                content = `Temps écoulé ! **Tu** remportes la partie !`
+            else
+                content = `Temps écoulé ! **Ton adversaire** remporte la partie !`
+        } else {
+            if (gameState.results.winner === gameState.playerId)
+                content = "Ton **adversaire** a quitté la partie !"
+            else
+                content = "**Tu** as quitté la partie !"
+        }
     }
 
-    return <p className="note">
-        {content.split("**").map((text, i) => {
-            if (i % 2 === 0)
-                return text
-            return <span key={i} style={{ color }}>{text}</span>
-        })}
-    </p> 
+    return <Note color={color}>{content}</Note>
+}
+
+export function getTimer(gameState) {
+    const seconds = gameState.grid.filter(slot => slot !== null).length === 0 ? 120 : 30
+    const time = Date.now() - gameState.lastUpdate
+    const secondsLeft = Math.max(0, seconds - Math.floor(time / 1000))
+    return `${secondsLeft < 10 ? "0" : ""}${secondsLeft}`
 }
