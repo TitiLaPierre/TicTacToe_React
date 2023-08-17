@@ -1,25 +1,13 @@
 import React from "react"
 
 import Button from "~/components/Button"
+import { getButton } from "~/data/ConnectionLost"
 
 import img_logo from "~/medias/logo.png"
-import img_check from "~/medias/check.svg"
 
-export default function ConnectionLost(props) {
+export default function ConnectionLost({ setSessionData }) {
 
-    const buttonData = {
-        handlers: {
-            onClick: () => props.setConnectionData(old => { return { ...old, count: old.count+1, reconnecting: true } })
-        },
-        context: {
-            title: "Se reconnecter",
-            description: "Essayer de se reconnecter au serveur"
-        },
-        action: {
-            color: "var(--red)",
-            icon: img_check
-        }
-    }
+    const buttonData = getButton(setSessionData)
     
     return (
         <header className="container">

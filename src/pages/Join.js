@@ -1,16 +1,14 @@
 import React from "react";
 import { Navigate, useParams } from "react-router-dom";
 
-export default function Join(props) {
+export default function Join({ setSessionData }) {
 
     const { gameId } = useParams();
-    console.log(gameId)
 
     React.useEffect(() => {
-        props.setSessionData(old => {
-            return { ...old, privateGameId: gameId }
+        setSessionData(old => {
+            return { ...old, linkId: gameId }
         });
-    // eslint-disable-next-line
-    }, []);
+    });
     return <Navigate to="/" replace />
 }

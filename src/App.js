@@ -11,90 +11,93 @@ import "~/css/container.css"
 export default function App() {
     
     const [socket, setSocket] = React.useState(null)
-    const [sessionData, setSessionData] = React.useState({ queue: false, gameId: null, publicPlayerCount: "?" })
-    const [connectionData, setConnectionData] = React.useState({ status: false, reconnecting: true, count: 0 })
+    const [sessionData, setSessionData] = React.useState({
+        publicPlayerCount: "?",
+        connection: {
+            status: false,
+            reconnecting: false,
+            retries: 0
+        }
+    })
+
+    let socketPingInterval
+    const socketOnOpen = (e) => {
+        console.info("Websocket connection established!")
+        setSessionData(old => {
+            return { ...old, connection: { ...old.connection, status: true, reconnecting: false } }
+        })
+        socketPingInterval = setInterval(() => {
+            e.target.send(JSON.stringify({ type: "ping" }))
+        }, 10000)
+    }
+    const socketOnClose = () => {
+        console.info("Websocket connection closed!")
+        setSessionData(old => {
+            return { ...old, gameState: null, connection: { ...old.connection, status: false, reconnecting: false } }
+        })
+        if (socketPingInterval) clearInterval(socketPingInterval)
+    }
+    const socketOnMessage = async function(e) {
+        const data = await JSON.parse(e.data)
+        if (data.type === "public_player_count") {
+            setSessionData(old => {
+                return { ...old, publicPlayerCount: data.count }
+            })
+        } else if (data.type === "sync") {
+            setSessionData(old => {
+                return { ...old, gameState: data.state }
+            })
+        }
+    }
 
     React.useEffect(() => {
         const host = process.env.REACT_APP_ENVIRONMENT === "local" ? "localhost:8080" : "ws.titilapierre.tech"
         const protocol = process.env.REACT_APP_ENVIRONMENT === "local" ? "ws://" : "wss://"
         const newSocket = new WebSocket(`${protocol}${host}`)
 
-        let interval = null
-
-        const eventOpen = () => {
-            console.info("Websocket connection established!")
-            setConnectionData(old => {
-                return { ...old, status: true, reconnecting: false }
-            })
-            interval = setInterval(() => {
-                newSocket.send(JSON.stringify({ type: "ping" }))
-            }, 10000)
-        }
-        const eventClose = () => {
-            console.info("Websocket connection closed!")
-            setSessionData(old => {
-                return { ...old, queue: false, gameId: null }
-            })
-            setConnectionData(old => {
-                return { ...old, status: false, reconnecting: false }
-            })
-            if (interval) clearInterval(interval)
-        }
-        const eventMessage = async function(e) {
-            const data = await JSON.parse(e.data)
-            if (data.type === "public_player_count") {
-                setSessionData(old => {
-                    return { ...old, publicPlayerCount: data.count }
-                })
-            }
-        }
-
-        newSocket.addEventListener("open", eventOpen)
-        newSocket.addEventListener("close", eventClose)
-        newSocket.addEventListener("message", eventMessage)
+        newSocket.addEventListener("open", socketOnOpen)
+        newSocket.addEventListener("close", socketOnClose)
+        newSocket.addEventListener("message", socketOnMessage)
 
         setSocket(newSocket)
 
         return () => { 
-            newSocket.removeEventListener("open", eventOpen)
-            newSocket.removeEventListener("close", eventClose)
-            newSocket.removeEventListener("message", eventMessage)
+            newSocket.removeEventListener("open", socketOnOpen)
+            newSocket.removeEventListener("close", socketOnClose)
+            newSocket.removeEventListener("message", socketOnMessage)
             newSocket.close()
         }
-    // eslint-disable-next-line
-    }, [connectionData.count])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionData.connection.retries])
 
     if (!socket)
         return <div className="blur"><h1>Connexion aux services</h1></div>
 
-    const components = []
-
-    if (connectionData.reconnecting)
-        components.push(<div className="blur"><h1>Connexion aux services</h1></div>)
-    
-    if (!connectionData.status && !connectionData.reconnecting) {
-        document.title = "Morpion • Connexion perdue"
-        components.push(<ConnectionLost socket={socket} setConnectionData={setConnectionData} key="content" />)
-    } else if (!sessionData.gameId) {
-        document.title = "Morpion • File d'attente"
-        components.push(<Lobby socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />)
-    } else {
-        document.title = "Morpion • Partie en cours"
-        components.push(<Game socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />)
-    }
+    let page
+    if (!sessionData.connection.status && !sessionData.connection.reconnecting)
+        page = { title: "Morpion • Connexion perdue", Element: ConnectionLost }
+    else if (!sessionData.gameState || sessionData.gameState.status === "queue")
+        page = { title: "Morpion • File d'attente", Element: Lobby }
+    else
+        page = { title: "Morpion • Partie en cours", Element: Game }
+    document.title = page.title
 
     const router = createBrowserRouter([
         {
             path: "/",
-            element: components,
+            element:
+                <>
+                    {sessionData.connection.reconnecting && <div className="blur"><h1>Connexion aux services</h1></div>}
+                    <page.Element socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />
+                </>
         },
         {
             path: "/:gameId",
-            element: <Join setSessionData={setSessionData} />,
+            element: <Join setSessionData={setSessionData} />
         },
         {
             path: "*",
-            element: <Navigate to="/" replace />,
+            element: <Navigate to="/" replace />
         }
     ]);
 
