@@ -86,7 +86,14 @@ export default function Game(props) {
             </p>
         </header>
         <div className="grid">
-            {gameState.grid.map((player, i) => <Slot handleClick={() => handleClick(i)} color={playerColors[player]} key={i} />)}
+            {gameState.grid.map((player, i) => {
+                return <Slot
+                    key={i}
+                    color={playerColors[player]}
+                    disabled={player !== null || gameState.currentPlayer !== gameState.playerId}
+                    handlers={{ onClick: () => handleClick(i) }}
+                />
+            })}
         </div>
         {
             gameState.status === "finished" &&

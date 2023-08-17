@@ -1,12 +1,10 @@
 import React from "react"
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 
 import Lobby from "~/pages/Lobby"
 import Game from "~/pages/Game"
 import ConnectionLost from "~/pages/ConnectionLost"
 import Join from "~/pages/Join"
-
-import Blur from "~/components/Blur"
 
 import "~/css/container.css"
 
@@ -67,12 +65,12 @@ export default function App() {
     }, [connectionData.count])
 
     if (!socket)
-        return <Blur />
+        return <div className="blur"><h1>Connexion aux services</h1></div>
 
     const components = []
 
     if (connectionData.reconnecting)
-        components.push(<Blur key="blur" />)
+        components.push(<div className="blur"><h1>Connexion aux services</h1></div>)
     
     if (!connectionData.status && !connectionData.reconnecting) {
         document.title = "Morpion • Connexion perdue"
@@ -93,6 +91,10 @@ export default function App() {
         {
             path: "/:gameId",
             element: <Join setSessionData={setSessionData} />,
+        },
+        {
+            path: "*",
+            element: <Navigate to="/" replace />,
         }
     ]);
 
