@@ -25,7 +25,8 @@ export default function Game(props) {
         return () => {
             props.socket.removeEventListener("message", eventMessage)
         }
-    }, [props])
+    // eslint-disable-next-line
+    }, [])
 
     function handleClick(i) {
         if (!props.socket)

@@ -34,7 +34,7 @@ export default function Lobby(props) {
         }
         const eventOpen = function() {
             if (props.sessionData.privateGameId) {
-                props.socket.send(JSON.stringify({ type: "join_queue", gameId: props.sessionData.privateGameId, queue: "private" }))
+                props.socket.send(JSON.stringify({ type: "join_queue", gameId: props.sessionData.privateGameId }))
                 props.setSessionData(old => {
                     const newSessionData = { ...old, queue: "private" }
                     delete newSessionData.privateGameId
