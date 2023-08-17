@@ -47,7 +47,7 @@ body {
   color: var(--white);
 }
 
-.content {
+#root {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -56,64 +56,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-.header {
-  background: var(--light);
-  padding: 25px 50px;
-  border-radius: 8px;
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
-  align-items: center;
-  min-width: min(100%, 500px);
-}
-.header--title { margin-bottom: 50px; }
-.header--title, .header--title h1 {
-  display: flex;
-  flex-direction: column;
-  text-transform: uppercase;
-  font-weight: 900;
-  font-size: 28px;
-  text-align: center;
-}
-.header--subtitle {
-  font-size: 14px;
-  color: var(--brighter);
-  text-align: center;
-  font-weight: 800;
-}
-.header--logo {
-  width: 160px;
-  height: 160px;
-  border-radius: 6px;
-}
-.header--description {
-  font-size: 14px;
-  max-width: 350px;
-  text-align: center;
-  color: var(--gray);
-  font-weight: 500;
-}
-.header--action {
-  background: var(--normal);
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 14px;
-  user-select: none;
-}
-.header--button {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  color: var(--white);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition-duration: .3s;
-}
-.button__blue { background: var(--blue); }
-.button__red { background: var(--red); }
 
 .grid {
   display: grid;
@@ -134,106 +76,4 @@ body {
 }
 .slot:focus-visible {
   outline-color: var(--blue);
-}
-
-.header--container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.button {
-  background: var(--normal);
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: 500;
-  padding-left: 20px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 25px;
-  cursor: pointer;
-  transition-duration: .3s;
-  user-select: none;
-  border: none;
-  outline: 2px solid transparent;
-}
-.button__disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
-.button:focus-visible {
-  outline-color: var(--blue);
-}
-.button--content {
-  display: flex;
-  gap: 25px;
-  align-items: center;
-}
-.button--text {
-  margin-block: 10px;
-  display: flex;
-  flex-direction: column;
-}
-.button--title {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.button--note {
-  font-size: 12px;
-  color: var(--gray);
-}
-.button--description {
-  font-size: 10px;
-  color: var(--gray);
-  text-align: left;
-}
-.button--action {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  padding-inline: 15px;
-  border-radius: 5px;
-  transition-duration: .3s;
-}
-.button--action--icon {
-  width: 24px;
-  stroke: var(--white);
-}
-.button__circle, .button__load {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  position: relative;
-  transition-duration: .3s;
-}
-.button__load {
-  scale: 1.6;
-  animation: animation__button__load 1s infinite;
-  z-index: 3;
-}
-.button__load::before {
-  content: "";
-  position: absolute; 
-  inset: -1px;
-  border-radius: 50%;
-  background: conic-gradient(var(--normal) 90deg, transparent 0deg);
-}
-.button__load::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: var(--normal);
-}
-
-@keyframes animation__button__load {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
