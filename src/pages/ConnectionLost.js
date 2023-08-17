@@ -1,6 +1,6 @@
 import React from "react"
 
-import img_logo from "./medias/logo.png"
+import img_logo from "~/medias/logo.png"
 
 export default function ConnectionLost(props) {
 

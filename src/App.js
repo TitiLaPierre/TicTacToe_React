@@ -1,12 +1,12 @@
 import React from "react"
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import Lobby from "./pages/Lobby"
-import Game from "./pages/Game"
-import ConnectionLost from "./pages/ConnectionLost"
-import Join from "./pages/Join"
+import Lobby from "~/pages/Lobby"
+import Game from "~/pages/Game"
+import ConnectionLost from "~/pages/ConnectionLost"
+import Join from "~/pages/Join"
 
-import Blur from "./components/Blur"
+import Blur from "~/components/Blur"
 
 export default function App() {
   

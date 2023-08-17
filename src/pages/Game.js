@@ -1,6 +1,6 @@
 import React from "react"
 
-import Slot from "./components/Slot"
+import Slot from "~/components/Slot"
 
 const colors = ["var(--blue)", "var(--red)"]
 

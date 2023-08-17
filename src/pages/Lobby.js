@@ -1,12 +1,12 @@
 import React from "react"
 
-import Button from "./components/Button"
+import Button from "~/components/Button"
 
-import img_logo from "./medias/logo.png"
-import img_chevron from "./medias/chevron.svg"
-import img_copy from "./medias/copy.svg"
-import img_check from "./medias/check.svg"
-import img_stop from "./medias/stop.svg"
+import img_logo from "~/medias/logo.png"
+import img_chevron from "~/medias/chevron.svg"
+import img_copy from "~/medias/copy.svg"
+import img_check from "~/medias/check.svg"
+import img_stop from "~/medias/stop.svg"
 
 export default function Lobby(props) {
 
