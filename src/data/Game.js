@@ -1,5 +1,3 @@
-import Note from "~/components/Note"
-
 import img_chevron from "~/medias/chevron.svg"
 
 export function getButton(setSessionData) {
@@ -55,13 +53,24 @@ export function getGameNote(gameState) {
                 content = "**Tu** as quitté la partie !"
         }
     }
+    return { content, color }
+}
 
-    return <Note color={color}>{content}</Note>
+function timeDigits(time, digits=2) {
+    let str = time.toString()
+    while (str.length < digits)
+        str = "0" + str
+    return str
+}
+
+export function getTimeLeft(gameState) {
+    const initialTime = gameState.grid.filter(slot => slot !== null).length === 0 ? 120_000 : 30_000
+    return gameState.lastUpdate + initialTime - Date.now()
 }
 
 export function getTimer(gameState) {
-    const seconds = gameState.grid.filter(slot => slot !== null).length === 0 ? 120 : 30
-    const time = Date.now() - gameState.lastUpdate
-    const secondsLeft = Math.max(0, seconds - Math.floor(time / 1000))
-    return `${secondsLeft < 10 ? "0" : ""}${secondsLeft}`
+    let secondsLeft = Math.floor(getTimeLeft(gameState) / 1000)
+    const minutesLeft = Math.floor(secondsLeft / 60)
+    secondsLeft -= minutesLeft*60
+    return `${timeDigits(minutesLeft)}:${timeDigits(secondsLeft)}`
 }

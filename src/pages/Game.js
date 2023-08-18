@@ -2,22 +2,25 @@ import React from "react"
 
 import Slot from "~/components/Slot"
 import Button from "~/components/Button"
-import Note from "~/components/Note"
-import { getButton, getGameNote, getTimer } from "~/data/Game"
+import Notes from "~/components/Notes"
+import { getButton, getGameNote, getTimeLeft, getTimer } from "~/data/Game"
 
 export default function Game({ socket, sessionData, setSessionData }) {
 
     const gameState = sessionData.gameState
-    const [timer, setTimer] = React.useState([getTimer(gameState), gameState.lastUpdate])
+    const [timeLeft, setTimeLeft] = React.useState(getTimeLeft(gameState))
 
     React.useEffect(() => {
-        if (gameState.status === "playing")
-            setTimeout(() => {
-                setTimer(() => {
-                    return [getTimer(gameState), gameState.lastUpdate]    
-                })
-            }, 100)
-    })
+        if (gameState.status === "playing") {
+            const updateTimerInterval = setInterval(() => {
+                setTimeLeft(getTimeLeft(gameState));
+            }, timeLeft % 1000);
+
+            return () => {
+                clearInterval(updateTimerInterval);
+            };
+        }
+    }, [timeLeft])
 
     const colors = ["var(--blue)", "var(--red)"]
     const opponentId = gameState.playerId === 0 ? 1 : 0
@@ -37,7 +40,6 @@ export default function Game({ socket, sessionData, setSessionData }) {
     }
 
     const buttonData = getButton(setSessionData)
-    const winTag = getGameNote(gameState)
 
     return (
         <>
@@ -47,19 +49,17 @@ export default function Game({ socket, sessionData, setSessionData }) {
                 <span className="subtitle">Partie {gameState.privacy === "public" ? "Publique" : "Privée"}</span>
             </div>
             {
-                gameState.status === "playing" &&
-                <Note
-                    color={
-                        gameState.currentPlayer === gameState.playerId &&
-                        timer[0] <= 15 &&
-                        timer[0] % 2 === 0 ?
-                        "var(--red)" : "var(--white)"
-                    }
-                >
-                    {`Temps restant : **${timer[0]}**`}
-                </Note>
+                gameState.status === "playing" ?
+                <Notes
+                    notes={[
+                        getGameNote(gameState),
+                        {
+                            content: `**${getTimer(gameState)}**`,
+                            color: "var(--white)"
+                        }]}
+                /> :
+                <Notes notes={[getGameNote(gameState)]} />
             }
-            {winTag}
         </header>
         <div className="grid">
             {gameState.grid.map((player, i) => {
