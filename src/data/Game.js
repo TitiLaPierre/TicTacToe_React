@@ -100,5 +100,6 @@ export function getTimer(gameState) {
     let secondsLeft = Math.floor(getTimeLeft(gameState) / 1000)
     const minutesLeft = Math.floor(secondsLeft / 60)
     secondsLeft -= minutesLeft*60
+    if (secondsLeft < 0) return "00:00"
     return `${timeDigits(minutesLeft)}:${timeDigits(secondsLeft)}`
 }
