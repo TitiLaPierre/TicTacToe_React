@@ -5,14 +5,14 @@ import { getButtons } from "~/data/Lobby"
 
 import img_logo from "~/medias/logo.png"
 
-export default function Lobby({ socket, sessionData, setSessionData }) {
+export default function Lobby({ sessionData, setSessionData }) {
 
     const [copied, setCopied] = React.useState(false)
 
     React.useEffect(() => {
         if (!sessionData.linkId)
             return
-        socket.send(JSON.stringify({ type: "join_queue", gameId: sessionData.linkId }))
+        sessionData.queueManager.joinQueue("private", sessionData.linkId)
         setSessionData(old => {
             const newSessionData = { ...old }
             delete newSessionData.linkId

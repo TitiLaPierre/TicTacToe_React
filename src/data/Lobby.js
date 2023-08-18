@@ -11,7 +11,12 @@ export function getButtons(sessionData, copied, setCopied) {
     //
     buttons.push({
         handlers: {
-            onClick: () => sessionData.queueManager.joinQueue("public")
+            onClick: () => {
+                if (sessionData.gameState)
+                    sessionData.queueManager.leaveQueue()
+                else
+                    sessionData.queueManager.joinQueue("public")
+            }
         },
         disabled: sessionData.gameState?.privacy === "private",
         decoration: {
@@ -34,7 +39,12 @@ export function getButtons(sessionData, copied, setCopied) {
     //
     buttons.push({
         handlers: {
-            onClick: () => sessionData.queueManager.joinQueue("private")
+            onClick: () => {
+                if (sessionData.gameState)
+                    sessionData.queueManager.leaveQueue()
+                else
+                    sessionData.queueManager.joinQueue("private")
+            }
         },
         disabled: sessionData.gameState?.privacy === "public",
         decoration: {
