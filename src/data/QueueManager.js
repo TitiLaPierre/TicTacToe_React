@@ -6,6 +6,6 @@ export default class QueueManager {
         this.socket.send(JSON.stringify({ type: "join_queue", queue: privacy, gameId }))
     }
     leaveQueue() {
-        this.send(JSON.stringify({ type: "leave_queue" }))
+        this.socket.send(JSON.stringify({ type: "leave_queue" }))
     }
 }
