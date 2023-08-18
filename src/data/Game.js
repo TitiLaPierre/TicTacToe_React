@@ -1,19 +1,47 @@
 import img_chevron from "~/medias/chevron.svg"
 
-export function getButton(setSessionData) {
-    return {
+export function getButtons(sessionData, setSessionData) {
+    const buttons = []
+
+    if (sessionData.gameState.privacy === "public") {
+        //
+        // Rejoin public queue
+        //
+        buttons.push({
+            handlers: {
+                onClick: () => {
+                    sessionData.queueManager.joinQueue("public")
+                    setSessionData(old => { return { ...old, gameState: null } })
+                }
+            },
+            context: {
+                title: "Rejouer une partie",
+                description: "Rejoindre une partie aléatoire"
+            },
+            action: {
+                color: "var(--blue)",
+                icon: img_chevron
+            }
+        })
+    }
+
+    //
+    // Leave
+    //
+    buttons.push({
         handlers: {
             onClick: () => setSessionData(old => { return { ...old, gameState: null } })
         },
         context: {
             title: "Quitter la partie",
-            description: "Pour rejoindre une autre partie"
+            description: "Retourner au menu principal"
         },
         action: {
-            color: "var(--blue)",
+            color: "var(--red)",
             icon: img_chevron
         }
-    }
+    })
+    return buttons
 }
 
 export function getGameNote(gameState) {

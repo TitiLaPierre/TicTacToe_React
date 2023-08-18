@@ -1,13 +1,13 @@
 import React from "react"
 
 import Button from "~/components/Button"
-import { getButton } from "~/data/ConnectionLost"
+import { getButtons } from "~/data/ConnectionLost"
 
 import img_logo from "~/medias/logo.png"
 
 export default function ConnectionLost({ setSessionData }) {
 
-    const buttonData = getButton(setSessionData)
+    const buttonsData = getButtons(setSessionData)
     
     return (
         <header className="container">
@@ -16,7 +16,7 @@ export default function ConnectionLost({ setSessionData }) {
             <p className="description">
                 Nous n'arrivons plus à contacter le serveur. Le problème vient peut-être de votre connexion internet.
             </p>
-            <Button {...buttonData} />
+            {buttonsData.map((button, index) => <Button key={index} {...button} />)}
         </header>
     )
 }

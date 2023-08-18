@@ -3,7 +3,7 @@ import React from "react"
 import Slot from "~/components/Slot"
 import Button from "~/components/Button"
 import Notes from "~/components/Notes"
-import { getButton, getGameNote, getTimeLeft, getTimer } from "~/data/Game"
+import { getButtons, getGameNote, getTimeLeft, getTimer } from "~/data/Game"
 
 export default function Game({ socket, sessionData, setSessionData }) {
 
@@ -39,7 +39,7 @@ export default function Game({ socket, sessionData, setSessionData }) {
         socket.send(JSON.stringify({ type: "play", slot: i }))
     }
 
-    const buttonData = getButton(setSessionData)
+    const buttonsData = getButtons(sessionData, setSessionData)
 
     return (
         <>
@@ -74,7 +74,9 @@ export default function Game({ socket, sessionData, setSessionData }) {
         {
             gameState.status === "finished" &&
             <div className="container">
-                <Button {...buttonData} />
+                <div className="list">
+                    {buttonsData.map((button, index) => <Button key={index} {...button} />)}
+                </div>
             </div>
         }
         </>

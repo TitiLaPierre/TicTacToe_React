@@ -21,13 +21,7 @@ export default function Lobby({ socket, sessionData, setSessionData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionData.linkId])
 
-    function queueHandle(privacy) {
-        const data = { type: sessionData.gameState ? "leave_queue" : "join_queue" }
-        if (!sessionData.gameState) data.queue = privacy
-        socket.send(JSON.stringify(data))
-    }
-
-    const buttonsData = getButtons(sessionData, queueHandle, copied, setCopied)
+    const buttonsData = getButtons(sessionData, copied, setCopied)
 
     return (
         <header className="container">
@@ -37,9 +31,7 @@ export default function Lobby({ socket, sessionData, setSessionData }) {
                 <span className="subtitle">Par TitiLaPierre</span>
             </div>
             <div className="list">
-                <Button {...buttonsData.public} />
-                <Button {...buttonsData.private} />
-                <Button {...buttonsData.copy} />
+                {buttonsData.map((button, index) => <Button key={index} {...button} />)}
             </div>
         </header>
     )

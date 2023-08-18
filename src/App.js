@@ -6,6 +6,8 @@ import Game from "~/pages/Game"
 import ConnectionLost from "~/pages/ConnectionLost"
 import Join from "~/pages/Join"
 
+import QueueManager from "./data/QueueManager"
+
 import "~/css/container.css"
 
 export default function App() {
@@ -24,7 +26,7 @@ export default function App() {
     const socketOnOpen = (e) => {
         console.info("Websocket connection established!")
         setSessionData(old => {
-            return { ...old, connection: { ...old.connection, status: true, reconnecting: false } }
+            return { ...old, connection: { ...old.connection, status: true, reconnecting: false }, queueManager: new QueueManager(e.target) }
         })
         socketPingInterval = setInterval(() => {
             e.target.send(JSON.stringify({ type: "ping" }))
