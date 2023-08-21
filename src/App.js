@@ -1,5 +1,5 @@
 import React from "react"
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { Navigate, Routes, Route } from 'react-router-dom'
 
 import Lobby from "~/pages/Lobby"
 import Game from "~/pages/Game"
@@ -84,26 +84,16 @@ export default function App() {
         page = { title: "Morpion • Partie en cours", Element: Game }
     document.title = page.title
 
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            element:
+    return (
+        <Routes>
+            <Route path="/" element={
                 <>
                     {sessionData.connection.reconnecting && <div className="blur"><h1>Connexion aux services</h1></div>}
                     <page.Element socket={socket} sessionData={sessionData} setSessionData={setSessionData} key="content" />
                 </>
-        },
-        {
-            path: "/:gameId",
-            element: <Join setSessionData={setSessionData} />
-        },
-        {
-            path: "*",
-            element: <Navigate to="/" replace />
-        }
-    ]);
-
-    return (
-        <RouterProvider router={router} />
+            } />
+            <Route path="/:gameId" element={<Join setSessionData={setSessionData} />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     )
 }
