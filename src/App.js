@@ -53,9 +53,8 @@ export default function App() {
     }
 
     React.useEffect(() => {
-        const host = process.env.REACT_APP_ENVIRONMENT === "local" ? "localhost:8080" : "ws.titilapierre.tech"
-        const protocol = process.env.REACT_APP_ENVIRONMENT === "local" ? "ws://" : "wss://"
-        const newSocket = new WebSocket(`${protocol}${host}`)
+        const socketUrl = process.env.NODE_ENV === "development" ? "ws://localhost:8080" : "wss://tictactoe.titilapierre.fr/services"
+        const newSocket = new WebSocket(socketUrl)
 
         newSocket.addEventListener("open", socketOnOpen)
         newSocket.addEventListener("close", socketOnClose)
